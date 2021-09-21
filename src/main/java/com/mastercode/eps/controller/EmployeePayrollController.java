@@ -1,34 +1,45 @@
-package com.mastercode.eps.controller;
+package com.mastercode.demo.controller;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.mastercode.eps.controller.dao.EmployeeRepo;
-import com.mastercode.eps.model.Employee;
+import com.mastercode.demo.dao.EmployeeRepo;
+import com.mastercode.demo.model.Employee;
 
 @RestController
-public class EmployeePayrollController {
-
+public class EmployeeController {
 	@Autowired
-	EmployeeRepo repository;
+	private EmployeeRepo repository;
 	
-	@PostMapping("/saveEmployeeData")
-	public String saveEmployeeData(@RequestBody Employee employee) {
+	@PostMapping("/toPost")
+	public String toPost(@RequestBody Employee employee) {
 		repository.save(employee);
-		return "Employee Data is Saved";
+		return "Employee Data is Saved...!";
 	}
-	@GetMapping("/getAllEmployee")
-	public List<Employee> getAllEmployee(){
+	@GetMapping("/toGetAll")
+	public List<Employee> getAll(){
 		return repository.findAll();
 	}
-	@GetMapping("/getEmployeeByID/{eID}")
-	public List<Employee> getEmployeeByID(@PathVariable Integer id){
-		return repository.findByid(id);
+	@GetMapping("/getByID/{eId}")
+	public List<Employee> getByID(@PathVariable Integer eId) {
+	
+		return (List<Employee>) repository.findByeId(eId);
+	}
+	@PutMapping("/updateByID/{eId}")
+	public String updateByID(@PathVariable Integer eId,@RequestBody Employee employee) {
+		Employee entityData=repository.findByeId(eId);
+		entityData.seteName(employee.geteName());
+		entityData.setDepartment(employee.getDepartment());
+		entityData.setSalary(employee.getSalary());
+		repository.save(entityData);
+		return "Update is done";
 	}
 }
